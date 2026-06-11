@@ -316,4 +316,4 @@ class TestIngestion:
         chunks_added, total = ingest_file(str(csv_file))
 
         assert chunks_added == 0, "Unsupported file type should return 0 chunks"
-        assert total == 0, "Total should also be 0 for unsupported file type"
+        assert total == 0
