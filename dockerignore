@@ -1,0 +1,53 @@
+# .dockerignore — Files excluded from the Docker build context
+#
+# WHY .dockerignore MATTERS:
+# Docker sends the entire build context to the Docker daemon.
+# Without .dockerignore, it sends your venv (500MB+), chroma_db,
+# .git history, and test caches — massively slowing down builds.
+# With .dockerignore, only the application code is sent.
+
+# Virtual environment — never include, huge and unnecessary
+venv/
+.venv/
+env/
+
+# ChromaDB local data — Pinecone is used in production
+chroma_db/
+
+# Git history — not needed in the image
+.git/
+.gitignore
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Test cache
+.pytest_cache/
+*.coverage
+htmlcov/
+
+# Environment files — secrets never go in Docker images
+.env
+.env.*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Node (if any frontend tools)
+node_modules/
+
+# Auth config — regenerated at runtime
+auth_config.yaml

@@ -1,0 +1,52 @@
+SOURCE: NewsAPI — Topic: LangChain RAG pipeline
+────────────────────────────────────────────────────────────
+
+## Article 1: Agent Memory: An Anatomy
+Source: Brgsk.xyz | Published: 2026-05-27
+
+what cognitive scientists have called memory for fifty years, what AI engineers are calling memory now, and how the two vocabularies line up.
+
+every agent memory library uses the same words: episodic, semantic, sometimes procedural. theyre cognitive sciences vocabulary, lifted into the API. the engineering often isnt lifted with them. a lib…
+
+
+---
+
+## Article 2: The Hidden Skill Gap: Why Knowing SQL + Python Isn’t Enough Anymore
+Source: Kdnuggets.com | Published: 2026-05-18
+
+This article is about the gap between what candidates prepare for and what companies actually need right now.
+
+# SQL + Python Just Isn't Enough
+ For years, the formula seemed simple: learn SQL + learn Python = get a data job. Especially as mid-sized companies started becoming "data-driven." Hiring managers w…
+
+
+---
+
+## Article 3: OWASP Agent Memory Guard: Stop AI agents from being weaponized through their own memory
+Source: Help Net Security | Published: 2026-06-01
+
+AI agents keep memory across sessions. Conversation history, vector stores, scratchpads, and RAG indexes persist between runs, and anything written into that store becomes a privileged input the agent reads back later. An attacker who plants text in the wrong…
+
+AI agents keep memory across sessions. Conversation history, vector stores, scratchpads, and RAG indexes persist between runs, and anything written into that store becomes a privileged input the agen…
+
+
+---
+
+## Article 4: LLM-Powered Deep Parsing for Industrial Inventory Search
+Source: Dzone.com | Published: 2026-05-29
+
+Industrial ERPs often look structured on the surface: item IDs, purchase orders, stock levels. But in many companies, they are overloaded with unintentional duplicates because the most important information is buried inside an unstructured description field.
+…
+
+Industrial ERPs often look structured on the surface: item IDs, purchase orders, stock levels. But in many companies, they are overloaded with unintentional duplicates because the most important info…
+
+
+---
+
+## Article 5: Foundry IQ: Build smarter agents faster with unified knowledge and serverless retrieval
+Source: Microsoft.com | Published: 2026-06-02
+
+Build smarter agents with Microsoft Foundry IQ, unifying enterprise and external data into a secure, scalable knowledge layer for faster, higher-quality answers.
+The post Foundry IQ: Build smarter agents faster with unified knowledge and serverless retrieval …
+
+Developers building agent fleets keep hitting the same pattern: the agent logic is ready, but the knowledge infrastructure underneath is complex to do well. Getting to production means solving for st…

@@ -1,0 +1,18 @@
+cookie:
+  expiry_days: 1
+  key: rag-secret-key-change-in-production
+  name: rag_auth_cookie
+credentials:
+  usernames:
+    admin_user:
+      email: admin@ragapp.com
+      name: Admin User
+      namespace: admin_user
+      password: $2b$12$Yf89BlJ3k9RAuILH346VhebqdZZeCa5t.PH0wPdPNXftMRXM3rIam
+    demo_user:
+      email: demo@ragapp.com
+      name: Demo User
+      namespace: demo_user
+      password: $2b$12$MhCRB1wZSu8anABV09hoa.eZw1Y.T0BDKT4spOt6miq/D6qnaxvJa
+preauthorized:
+  emails: []

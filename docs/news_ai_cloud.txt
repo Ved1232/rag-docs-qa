@@ -1,0 +1,52 @@
+SOURCE: NewsAPI — Topic: artificial intelligence cloud computing
+────────────────────────────────────────────────────────────
+
+## Article 1: Ilya Sutskever Stands by His Role in Sam Altman’s OpenAI Ouster: ‘I Didn’t Want It to Be Destroyed’
+Source: Wired | Published: 2026-05-11
+
+The former OpenAI chief scientist may be estranged from the company, but he still came to its defense as he testified on Monday.
+
+Elon Musks trial against OpenAI and Microsoft entered its final stretch on Monday, with testimony from Microsoft CEO Satya Nadella, former OpenAI chief scientist Ilya Sutskever, and current OpenAI ch…
+
+
+---
+
+## Article 2: Explainer-What are AI PCs that Nvidia's Jensen Huang is betting on?
+Source: Yahoo Entertainment | Published: 2026-06-01
+
+June 1 () - Nvidia has turned the spotlight on AI PCs after CEO Jensen Huang launched a new chip that would put artificial intelligence capabilities directly...
+
+June 1 (Reuters) - Nvidia has turned the spotlight on AI PCs after CEO Jensen Huang launched a new chip that would put artificial intelligence capabilities directly into laptops and desktop computers…
+
+
+---
+
+## Article 3: ZTE and Telkom Indonesia sign strategic MoU to accelerate digital solutions and infrastructure development
+Source: Theregister.com | Published: 2026-05-14
+
+Strengthening Indonesia’s digital ecosystem through AI, cloud computing, and next-gen connectivity
+
+Partner Content ZTE
+Corporation (0763.HK / 000063.SZ), a global leading provider of integrated
+information and communication technology solutions, has officially signed a Memorandum of Understandin…
+
+
+---
+
+## Article 4: Kevin O'Leary says he's 'not walking away' from his Utah AI data center, despite call to shrink it by 75%
+Source: Business Insider | Published: 2026-06-03
+
+A state Senator proposed a 75% cut and environmental restrictions on Kevin O'Leary's Stratos data center Project. O'Leary said he's not walking away.
+
+Kevin O'Leary spoke out against a recent proposed reduction to a Utah data center project.Christopher Willard/ABC via Getty Images
+<ul><li>O'Leary Digital was caught "off guard" by a lawmaker's call…
+
+
+---
+
+## Article 5: Data centers are good
+Source: Marginalrevolution.com | Published: 2026-05-13
+
+Data centers are the physical infrastructure behind cloud computing, artificial intelligence, and enterprise software. The rapid diffusion of artificial intelligence (AI) is intensifying demand for compute, accelerating investment in data centers, and raising…
+
+Data centers are the physical infrastructure behind cloud computing, artificial intelligence, and enterprise software. The rapid diffusion of artificial intelligence (AI) is intensifying demand for c…

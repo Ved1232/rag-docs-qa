@@ -1,0 +1,98 @@
+# ─────────────────────────────────────────────────────────────────
+# docker-compose.yml — Full RAG stack: app + redis + worker
+#
+# SERVICES:
+#   app    — Streamlit UI + RAG pipeline (port 8501)
+#   redis  — Cache + Celery broker (port 6379)
+#   worker — Celery async task worker
+#
+# HOW TO RUN:
+#   docker-compose up --build      # build and start all services
+#   docker-compose up --build -d   # same but in background
+#   docker-compose logs -f         # follow all logs
+#   docker-compose logs -f app     # follow app logs only
+#   docker-compose down            # stop everything
+#   docker-compose down -v         # stop + delete volumes
+# ─────────────────────────────────────────────────────────────────
+
+
+services:
+
+  # ── REDIS ───────────────────────────────────────────────────────
+  # Starts first — app and worker depend on it
+  redis:
+    image: redis:7-alpine
+    container_name: rag_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - rag_network
+
+  # ── APP (Streamlit) ──────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rag_app
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env
+    environment:
+      # Override Redis host to use Docker service name
+      # Docker's internal DNS resolves 'redis' to the redis container
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      # Use Pinecone in production Docker deployment
+      - VECTOR_STORE=pinecone
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      # Persist docs folder so uploaded files survive restarts
+      - ./docs:/app/docs
+    restart: unless-stopped
+    networks:
+      - rag_network
+
+  # ── CELERY WORKER ────────────────────────────────────────────────
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rag_worker
+    # Override the CMD from Dockerfile to run Celery instead of Streamlit
+    command: celery -A core.tasks worker --loglevel=info --concurrency=2
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - VECTOR_STORE=pinecone
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./docs:/app/docs
+    restart: unless-stopped
+    networks:
+      - rag_network
+
+# ── VOLUMES ───────────────────────────────────────────────────────
+volumes:
+  redis_data:
+    driver: local
+
+# ── NETWORKS ──────────────────────────────────────────────────────
+networks:
+  rag_network:
+    driver: bridge

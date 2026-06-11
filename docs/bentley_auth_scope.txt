@@ -1,0 +1,22 @@
+SOURCE: Bentley iTwin authentication scopes and OAuth configuration
+URL: https://developer.bentley.com/itwin-platform-scope-introduction/
+────────────────────────────────────────────────────────────
+
+Introduction of  itwin-platform  scope We are adopting the  itwin-platform  scope to enhance the developer experience. This change is aimed at simplifying the API usage by removing the need for individual API associations. The scope is a universal scope that allows applications to access all APIs without the need to have individual scope associations, streamlining the development process.
+Advantages of  itwin-platform  scope
+Ease of access: A single scope to access all APIs.
+Reduced complexity: No need to manage multiple scopes.
+Efficient development: Quicker application setup and integration.
+Implementation details
+You can start using the  itwin-platform  scope in both existing and new applications.
+For existing applications
+Before removing deprecated scopes make sure your application authorization server request is using the new `itwin-platform` scope. If configuration is not migrated to use the new scope and application will be edited, you will lose all your access until configuration is migrated.
+Existing applications must transition to the  itwin-platform  scope by removing all deprecated scopes in the application edit page. To access your application open  My Apps  and select desired application. Below is an example of what you will see in your application when you have deprecated scopes.
+For new applications
+You can create new applications at  Register application  and they will have the  itwin-platform  scope assigned during the registration process.
+Application authorization
+The authorization request now looks different as you only need  itwin-platform  scope to get your authorization token. Below are links to updated documentation for different application types.
+Native Application
+Service Application
+Web Application
+Single-Page application (SPA)

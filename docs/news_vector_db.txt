@@ -1,0 +1,54 @@
+SOURCE: NewsAPI — Topic: vector database pinecone chromadb
+────────────────────────────────────────────────────────────
+
+## Article 1: Vector Databases Explained for .NET Developers – Pinecone vs Weaviate vs ChromaDB
+Source: C-sharpcorner.com | Published: 2026-05-20
+
+Explore vector databases for .NET! Compare Pinecone, Weaviate, & ChromaDB for AI apps like chatbots, RAG, & semantic search. Boost your AI skills now!
+
+Vector databases have become one of the most important technologies in modern AI applications. They power systems such as:
+<ul><li>AI chatbots
+</li><li>AI agents
+</li><li>Semantic search
+</li><li…
+
+
+---
+
+## Article 2: How to Save Money Using Custom LLMs for Specific Tasks
+Source: Dzone.com | Published: 2026-06-03
+
+AI has already moved beyond text generation. Modern agents can browse the internet, read documents, call APIs, query databases, and coordinate numerous actions between tools and services. They are expected to do more than simply provide a single nebulous answ…
+
+AI has already moved beyond text generation. Modern agents can browse the internet, read documents, call APIs, query databases, and coordinate numerous actions between tools and services. They are ex…
+
+
+---
+
+## Article 3: The Roadmap for Mastering LLMOps in 2026
+Source: Machinelearningmastery.com | Published: 2026-06-01
+
+In this article, you will learn how to build production-grade LLM systems by following a structured six-step LLMOps roadmap covering observability, evaluation, cost control, and agent orchestration. Topics we will cover include: How LLMOps differs from tradit…
+
+In this article, you will learn how to build production-grade LLM systems by following a structured six-step LLMOps roadmap covering observability, evaluation, cost control, and agent orchestration.…
+
+
+---
+
+## Article 4: AI Agents Explained: Architecture, Workflow, and Real-World Examples
+Source: C-sharpcorner.com | Published: 2026-05-12
+
+Explore AI Agents: architecture, workflow, and real-world examples. Learn how they reason, plan, and automate tasks, revolutionizing software development.
+
+Artificial Intelligence is rapidly moving beyond simple chatbots and automation scripts. Modern applications are now using AI Agents that can reason, make decisions, interact with tools, remember con…
+
+
+---
+
+## Article 5: reeve added to PyPI
+Source: Pypi.org | Published: 2026-05-12
+
+A personal long-term memory system built on Neo4j and OpenAI — stores and recalls episodic memories across a 70-year lifespan using a hybrid 3-lane retrieval engine.
+
+Lifetime persistent memory for LLMs a knowledge graph that remembers everything, knows what changed, and never forgets what matters.
+Every fact you store today is still retrievable 50 years from now…
