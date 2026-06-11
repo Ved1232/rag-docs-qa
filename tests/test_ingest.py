@@ -208,4 +208,4 @@ class TestIngestion:
         chunks_added, total = ingest_file(str(csv_file))
 
         assert chunks_added == 0
-        assert total == 0   
+        assert total == 0
