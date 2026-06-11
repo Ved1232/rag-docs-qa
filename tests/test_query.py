@@ -53,8 +53,8 @@ def mock_embeddings(monkeypatch):
             np.random.seed(seed)
             return np.random.rand(1536).tolist()
 
+    # embeddings lives in core.ingest — patch only there
     monkeypatch.setattr("core.ingest.embeddings", FakeEmbeddings())
-    monkeypatch.setattr("core.query.embeddings", FakeEmbeddings())
 
 
 @pytest.fixture

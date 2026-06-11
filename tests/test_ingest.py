@@ -240,8 +240,9 @@ class TestIngestion:
                 return np.zeros(1536).tolist()
 
         # Patch the embeddings object in the ingest module
+        # embeddings is defined in core.ingest and imported by core.query
+        # so we only need to patch core.ingest.embeddings
         monkeypatch.setattr("core.ingest.embeddings", FakeEmbeddings())
-        monkeypatch.setattr("core.query.embeddings", FakeEmbeddings())
 
     def test_ingest_text_returns_chunk_count(self, mock_embeddings, sample_text):
         """
@@ -315,4 +316,4 @@ class TestIngestion:
         chunks_added, total = ingest_file(str(csv_file))
 
         assert chunks_added == 0, "Unsupported file type should return 0 chunks"
-        assert total == 0   
+        assert total == 0, "Total should also be 0 for unsupported file type"
