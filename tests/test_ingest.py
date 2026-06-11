@@ -1,62 +1,23 @@
 # ─────────────────────────────────────────────────────────────────
 # tests/test_ingest.py — Tests for document ingestion pipeline
-#
-# KEY DESIGN DECISION:
-#   Uses chromadb.EphemeralClient() (in-memory) instead of
-#   PersistentClient (disk-based) for all tests.
-#
-#   WHY IN-MEMORY FOR TESTS?
-#   "PersistentClient writes to disk. In CI environments like
-#    GitHub Actions, the runner may have read-only filesystem
-#    permissions for certain paths, causing InternalError 1032.
-#    EphemeralClient runs entirely in RAM — no disk writes,
-#    no permission issues, no cleanup needed, and 10x faster."
 # ─────────────────────────────────────────────────────────────────
 
 import os
 import pytest
 import uuid
-import shutil
+import numpy as np
 
-# Force in-memory ChromaDB for all tests
 os.environ["CHROMA_PATH_OVERRIDE"] = ":memory:"
 
 
-@pytest.fixture(autouse=True)
-def patch_vectorstore(monkeypatch):
-    """
-    Replaces get_vectorstore() with an in-memory ChromaDB instance.
-    Runs automatically before every test in this file.
-
-    This is the correct way to test ChromaDB — never write to disk
-    in tests. Each test gets a fresh in-memory store that is
-    discarded when the test ends.
-    """
-    import chromadb
-    from langchain_chroma import Chroma
-
-    def make_in_memory_store(namespace=None):
-        # EphemeralClient = pure in-memory, no disk, no permissions needed
-        client = chromadb.EphemeralClient()
-        # Use a unique collection name per test to ensure isolation
-        collection_name = f"test_{uuid.uuid4().hex[:8]}"
-        return Chroma(
-            client=client,
-            collection_name=collection_name,
-            embedding_function=None  # overridden by mock_embeddings
-        )
-
-    monkeypatch.setattr("core.ingest.get_vectorstore", make_in_memory_store)
-    monkeypatch.setattr("core.query.get_vectorstore", make_in_memory_store)
-
+# ── FIXTURES ──────────────────────────────────────────────────────
 
 @pytest.fixture
 def mock_embeddings(monkeypatch):
     """
-    Replaces OpenAI embeddings with a fast, free fake.
-    Returns deterministic vectors so retrieval is testable.
+    Fake embeddings — returns deterministic vectors, no OpenAI calls.
+    Returned so patch_vectorstore can inject it into the Chroma store.
     """
-    import numpy as np
     from langchain_core.embeddings import Embeddings
 
     class FakeEmbeddings(Embeddings):
@@ -75,6 +36,35 @@ def mock_embeddings(monkeypatch):
 
     fake = FakeEmbeddings()
     monkeypatch.setattr("core.ingest.embeddings", fake)
+    return fake  # returned so patch_vectorstore can use it
+
+
+@pytest.fixture(autouse=True)
+def patch_vectorstore(monkeypatch, mock_embeddings):
+    """
+    Replaces get_vectorstore() with an in-memory ChromaDB instance.
+    Depends on mock_embeddings so the fake model is passed into Chroma.
+
+    WHY embedding_function=mock_embeddings?
+    When add_documents() is called, Chroma calls embed_documents()
+    on the embedding_function. Without it, Chroma raises:
+    'You must provide an embedding function'
+    Passing mock_embeddings here mirrors production behaviour exactly.
+    """
+    import chromadb
+    from langchain_chroma import Chroma
+
+    def make_in_memory_store(namespace=None):
+        client = chromadb.EphemeralClient()
+        collection_name = f"test_{uuid.uuid4().hex[:8]}"
+        return Chroma(
+            client=client,
+            collection_name=collection_name,
+            embedding_function=mock_embeddings  # required for add_documents()
+        )
+
+    monkeypatch.setattr("core.ingest.get_vectorstore", make_in_memory_store)
+    monkeypatch.setattr("core.query.get_vectorstore", make_in_memory_store)
 
 
 @pytest.fixture
@@ -103,7 +93,7 @@ def sample_txt_file(tmp_path, sample_text):
 # ── UNIT TESTS: TEXT SPLITTER ─────────────────────────────────────
 
 class TestChunking:
-    """Tests for chunking logic — no DB needed."""
+    """Tests for chunking logic — no DB writes needed."""
 
     def test_text_splits_into_multiple_chunks(self):
         from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -147,7 +137,7 @@ class TestChunking:
             chunk0_words = set(chunks[0].page_content.split())
             chunk1_words = set(chunks[1].page_content.split())
             overlap = chunk0_words.intersection(chunk1_words)
-            assert len(overlap) > 0, "Adjacent chunks should share words"
+            assert len(overlap) > 0
 
     def test_empty_text_produces_no_chunks(self):
         from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -156,7 +146,6 @@ class TestChunking:
         splitter = RecursiveCharacterTextSplitter(chunk_size=200, chunk_overlap=20)
         doc = Document(page_content="   ", metadata={"source": "empty"})
         chunks = splitter.split_documents([doc])
-
         meaningful_chunks = [c for c in chunks if c.page_content.strip()]
         assert len(meaningful_chunks) == 0
 
@@ -164,21 +153,18 @@ class TestChunking:
 # ── INTEGRATION TESTS: INGESTION ─────────────────────────────────
 
 class TestIngestion:
-    """Integration tests using in-memory ChromaDB."""
+    """Integration tests using in-memory ChromaDB + fake embeddings."""
 
-    def test_ingest_text_returns_chunk_count(self, mock_embeddings, sample_text, patch_vectorstore):
-        """ingest_text() should return the number of chunks created."""
+    def test_ingest_text_returns_chunk_count(self, sample_text):
         from core.ingest import ingest_text
 
         chunks_added, total = ingest_text(sample_text, source_name="test_doc")
 
         assert total > 0, "Text splitter should produce at least one chunk"
-        assert chunks_added >= 0, "chunks_added must be non-negative"
+        assert chunks_added > 0, f"Expected chunks to be added, got {chunks_added}"
+        assert chunks_added == total, "All chunks should be new on first ingest"
 
-    def test_ingest_text_prevents_duplicates(self, mock_embeddings, sample_text, patch_vectorstore):
-        """
-        Ingesting the same document twice should not add duplicate chunks.
-        """
+    def test_ingest_text_prevents_duplicates(self, sample_text):
         from core.ingest import ingest_text
 
         unique_source = f"test_doc_{uuid.uuid4().hex[:8]}"
@@ -186,21 +172,32 @@ class TestIngestion:
         # First ingest
         first_count, total = ingest_text(sample_text, source_name=unique_source)
         assert total > 0, "Text splitter should produce chunks"
+        assert first_count > 0, f"First ingest should add chunks, got {first_count}"
 
-        # Second ingest — same source name, same chunk IDs → 0 new chunks
+        # Second ingest — same source name → same chunk IDs → 0 new chunks
         second_count, _ = ingest_text(sample_text, source_name=unique_source)
-        assert second_count == 0, "Re-ingesting same document should add 0 chunks"
+        assert second_count == 0, "Re-ingesting same document should add 0 new chunks"
 
-    def test_ingest_file_loads_txt(self, mock_embeddings, sample_txt_file, patch_vectorstore):
-        """ingest_file() should load and ingest a TXT file."""
+    def test_ingest_stores_source_metadata(self, sample_text):
+        from core.ingest import ingest_text, get_vectorstore
+
+        ingest_text(sample_text, source_name="my_test_document.txt")
+
+        vectorstore = get_vectorstore()
+        results = vectorstore.similarity_search("cloud computing", k=1)
+
+        assert len(results) > 0, "Should find at least one result"
+        assert results[0].metadata.get("source") == "my_test_document.txt"
+
+    def test_ingest_file_loads_txt(self, sample_txt_file):
         from core.ingest import ingest_file
 
         chunks_added, total = ingest_file(sample_txt_file)
 
         assert total > 0, "TXT file should produce at least one chunk"
+        assert chunks_added > 0
 
-    def test_ingest_unsupported_file_returns_zero(self, mock_embeddings, tmp_path, patch_vectorstore):
-        """Unsupported file types should return (0, 0) without crashing."""
+    def test_ingest_unsupported_file_returns_zero(self, tmp_path):
         from core.ingest import ingest_file
 
         csv_file = tmp_path / "data.csv"
