@@ -54,14 +54,16 @@ def patch_vectorstore(monkeypatch, mock_embeddings):
     import chromadb
     from langchain_chroma import Chroma
 
+    client = chromadb.EphemeralClient()
+    collection_name = f"test_{uuid.uuid4().hex[:8]}"
+    store = Chroma(
+        client=client,
+        collection_name=collection_name,
+        embedding_function=mock_embeddings  # required for add_documents()
+    )
+
     def make_in_memory_store(namespace=None):
-        client = chromadb.EphemeralClient()
-        collection_name = f"test_{uuid.uuid4().hex[:8]}"
-        return Chroma(
-            client=client,
-            collection_name=collection_name,
-            embedding_function=mock_embeddings  # required for add_documents()
-        )
+        return store
 
     monkeypatch.setattr("core.ingest.get_vectorstore", make_in_memory_store)
     monkeypatch.setattr("core.query.get_vectorstore", make_in_memory_store)
@@ -206,4 +208,4 @@ class TestIngestion:
         chunks_added, total = ingest_file(str(csv_file))
 
         assert chunks_added == 0
-        assert total == 0
+        assert total == 0   
