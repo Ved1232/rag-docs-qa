@@ -259,7 +259,7 @@ Add OPENAI_API_KEY to GitHub Secrets: Settings > Secrets > Actions > New reposit
 
 ---
 
-## Interview QA
+## FAQ
 
 **Q: Walk me through your architecture.**
 Three phases: ingestion converts documents to vectors stored in Pinecone using SHA256 deterministic IDs to prevent duplicates; retrieval embeds the question and finds the top-4 chunks via cosine similarity; generation builds a grounded prompt and calls GPT-4o-mini via a LangChain LCEL chain. Redis sits in front — repeat questions are served in under 5ms.
