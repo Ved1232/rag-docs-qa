@@ -291,6 +291,3 @@ Microsoft AZ-104 Certified · Oracle AI Foundations Certified
 
 ---
 
-## License
-
-MIT License — free to use, modify, and distribute with attribution.
